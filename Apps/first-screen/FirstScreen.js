@@ -12,9 +12,9 @@ import {
   Button,
 } from "react-native";
 
-const FirstScreen = ({ callbackFunc }) => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+const FirstScreen = (props) => {
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,27 +28,36 @@ const FirstScreen = ({ callbackFunc }) => {
       </View>
       {/* Input Fields */}
       <View style={styles.field}>
-        <Text style={styles.text}>Enter your Name:</Text>
+        <Text style={styles.text}>Enter your Nick Name:</Text>
         <TextInput
-          placeholder="First Name"
+          placeholder="your name here"
           placeholderTextColor="#E74C3C"
           style={styles.textInput}
-          keyboardType="default"
-          onChangeText={(text) => setFirstName(text)}
+          value={name}
+          onChangeText={(text) => setName(text)}
+          maxLength={6}
         />
-        <TextInput
-          placeholder="Last Name"
-          placeholderTextColor="#E74C3C"
-          style={styles.textInput}
-          onChangeText={(text) => setLastName(text)}
-        />
+        {nameError && (
+          <Text style={{ color: "red", fontSize: 11 }}>
+            *This field is required
+          </Text>
+        )}
       </View>
       {/* Button */}
       <Button
-        onPress={() => console.log("hi")}
+        onPress={() => {
+          if (name.trim().length === 0) {
+            setNameError(true);
+          } else {
+            setNameError(false);
+            props.passUserDetails(name.trim());
+            props.navigation.navigate("secondscreen");
+          }
+        }}
         title="Be A Scientist!"
         color="#841584"
       />
+      <Text style={{fontSize:11, margin:2}}>Click the button and discover the scientist in you..</Text>
     </SafeAreaView>
   );
 };
@@ -86,7 +95,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 18,
-    width: "48%",
+    width: "100%",
     color: "#16A085",
     margin: 2,
     padding: 2,
